@@ -1,7 +1,5 @@
 import {
-  Attachments,
   Bubble,
-  Conversations,
   Prompts,
   Sender,
   Welcome,
@@ -9,22 +7,17 @@ import {
   useXChat,
 } from '@ant-design/x';
 import { createStyles } from 'antd-style';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { UserOutlined } from '@ant-design/icons';
 
 import {
-  CloudUploadOutlined,
   CommentOutlined,
-  EllipsisOutlined,
   FireOutlined,
   HeartOutlined,
-  PaperClipOutlined,
-  PlusOutlined,
   ReadOutlined,
-  ShareAltOutlined,
   SmileOutlined,
 } from '@ant-design/icons';
-import { Badge, Button, Avatar, type GetProp, Space } from 'antd';
+import { Avatar, type GetProp, Space } from 'antd';
 
 const renderTitle = (icon: React.ReactElement, title: string) => (
   <Space align="start">
@@ -33,12 +26,12 @@ const renderTitle = (icon: React.ReactElement, title: string) => (
   </Space>
 );
 
-const defaultConversationsItems = [
-  {
-    key: '0',
-    label: 'What is Ant Design X?',
-  },
-];
+// const defaultConversationsItems = [
+//   {
+//     key: '0',
+//     label: 'What is Ant Design X?',
+//   },
+// ];
 
 const useStyle = createStyles(({ token, css }) => {
   return {
@@ -201,17 +194,12 @@ const Independent: React.FC = () => {
   const { styles } = useStyle();
 
   // ==================== State ====================
-  const [headerOpen, setHeaderOpen] = useState(false);
 
   const [content, setContent] = useState('');
 
-  const [conversationsItems, setConversationsItems] = useState(defaultConversationsItems);
 
-  const [activeKey, setActiveKey] = useState(defaultConversationsItems[0].key);
+  // const [activeKey, setActiveKey] = useState(defaultConversationsItems[0].key);
 
-  const [attachedFiles, setAttachedFiles] = useState<GetProp<typeof Attachments, 'items'>>(
-    [],
-  );
 
   // ==================== Runtime ====================
   const [agent] = useXAgent({
@@ -220,15 +208,15 @@ const Independent: React.FC = () => {
     },
   });
 
-  const { onRequest, messages, setMessages } = useXChat({
+  const { onRequest, messages } = useXChat({
     agent,
   });
 
-  useEffect(() => {
-    if (activeKey !== undefined) {
-      setMessages([]);
-    }
-  }, [activeKey]);
+  // useEffect(() => {
+  //   if (activeKey !== undefined) {
+  //     setMessages([]);
+  //   }
+  // }, [activeKey]);
 
   // ==================== Event ====================
   const onSubmit = (nextContent: string) => {

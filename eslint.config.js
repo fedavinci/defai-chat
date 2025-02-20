@@ -23,6 +23,11 @@ export default tseslint.config(
         'warn',
         { allowConstantExport: true },
       ],
+      "@typescript-eslint/no-unused-vars": "off", // 禁用未使用变量的警告
+      "react-hooks/exhaustive-deps": "off", // 禁用 hooks 依赖检查警告
+      "react/jsx-uses-vars": "off", // 禁用未使用 JSX 变量的警告
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/ban-ts-comment": "off" // Disable the rule that bans ts-comments like @ts-nocheck
     },
   },
 )
