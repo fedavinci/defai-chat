@@ -3,7 +3,7 @@ import { message } from 'antd'
 // import { getToken } from '../utils/user-token'
 
 const instance = axios.create({
-  baseURL: 'http://3.0.177.84:8000',
+  baseURL: 'https://sonic.buymeacryptocoffee.top',
   timeout: 30 * 1000,
 })
 
