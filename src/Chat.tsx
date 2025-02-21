@@ -13,13 +13,13 @@ import { UserOutlined } from '@ant-design/icons';
 import { generateText, getWalletBalance, transferToken, getTokenAddress } from './services/agent'
 import { message } from 'antd';
 import { red, blue, green } from '@ant-design/colors';
-import { useAccount, useWriteContract, useSendTransaction, usePrepareTransactionRequest } from 'wagmi';
-import { parseUnits } from 'viem'
+import { useAccount, useWriteContract, useSendTransaction, usePrepareTransactionRequest, useReadContract } from 'wagmi';
+
+import { parseUnits, erc20Abi } from 'viem'
 
 import {
   PullRequestOutlined,
   PropertySafetyOutlined,
-  RedEnvelopeOutlined,
   FireOutlined,
   ReadOutlined,
 } from '@ant-design/icons';
@@ -156,13 +156,8 @@ const placeholderPromptsItems: GetProp<typeof Prompts, 'items'> = [
 const roles: GetProp<typeof Bubble.List, 'roles'> = {
   ai: {
     placement: 'start',
-    typing: { step: 5, interval: 20 },
+    typing: { step: 3 },
     avatar: { icon: <Avatar src="https://mdn.alipayobjects.com/huamei_iwk9zp/afts/img/A*s5sNRo5LjfQAAAAAAAAAAAAADgCCAQ/fmt.webp" />, style: { background: '#fde3cf' } },
-    styles: {
-      content: {
-        borderRadius: 16,
-      },
-    },
   },
   local: {
     placement: 'end',
@@ -179,18 +174,15 @@ const suggestions: SuggestionItems = [
 ];
 
 const Independent: React.FC = () => {
-  // ==================== Style ====================
+
   const { styles } = useStyle();
   const { address } = useAccount();
 
   const { sendTransaction } = useSendTransaction();
-
   const { writeContract } = useWriteContract()
 
   const [agent] = useXAgent({
     request: async ({ message }, { onSuccess }) => {
-      // onSuccess(`Mock success return. You said: ${message}`);
-
       let result = null;
       try {
         if (message === '查询余额' && address) {
@@ -203,7 +195,6 @@ const Independent: React.FC = () => {
           });
         }
 
-        console.log(result)
         onSuccess(result?.message || result || '抱歉，我没有找到合适的回答');
 
         // result = {
@@ -218,57 +209,31 @@ const Independent: React.FC = () => {
         //   },
         //   "message": "Please confirm transfer of 100 USDC from 0x456... to 0x789..."
         // }
+
         if (result?.action === 'transfer') {
           const { transaction_data } = result;
-          if (address?.toLowerCase() === transaction_data.from.toLowerCase()) {
-            if (transaction_data.token_name === 'S') {
-              // 原生代币转账
-              sendTransaction({
-                to: transaction_data.to,
-                value: parseUnits(transaction_data.amount.toString(), 24),
-              });
-
-            } else {
-              // ERC20 代币转账
-              const ERC20_ABI = [
-                {
-                  constant: false,
-                  inputs: [
-                    { name: '_to', type: 'address' },
-                    { name: '_value', type: 'uint256' },
-                  ],
-                  name: 'transfer',
-                  outputs: [{ name: '', type: 'bool' }],
-                  type: 'function',
-                },
-                {
-                  constant: true,
-                  inputs: [],
-                  name: 'decimals',
-                  outputs: [{ name: '', type: 'uint8' }],
-                  type: 'function',
-                }
-              ];
-
-              // const requiresSignature = transaction_data.requires_signature;
-
-              // if (requiresSignature) {
-              //   //usePrepareTransactionRequest  预执行交易
-              // } else {
-              writeContract({
-                address: transaction_data.token_address as `0x${string}`, // 添加类型断言
-                abi: ERC20_ABI,
-                functionName: 'transfer',
-                args: [
-                  transaction_data.to as `0x${string}`, // 添加类型断言
-                  parseUnits(transaction_data.amount.toString(), 6), // USDT 通常是 6 位精度
-                ],
-              })
-            }
-            // }
-          } else {
+          if (address?.toLowerCase() !== transaction_data.from.toLowerCase()) {
             onSuccess('请使用正确的钱包地址进行转账');
             return;
+          }
+          if (transaction_data.token_name === 'S') {
+            // 原生代币转账
+            sendTransaction({
+              to: transaction_data.to,
+              value: parseUnits(transaction_data.amount.toString(), 18),
+            });
+
+          } else {
+            // ERC20 代币转账
+            writeContract({
+              address: transaction_data.token_address as `0x${string}`,
+              abi: erc20Abi,
+              functionName: 'transfer',
+              args: [
+                transaction_data.to as `0x${string}`,
+                parseUnits(transaction_data.amount.toString(), transaction_data.decimals || 18)
+              ],
+            })
           }
         }
       } catch (error) {
@@ -280,9 +245,8 @@ const Independent: React.FC = () => {
 
   const { onRequest, messages } = useXChat({
     agent,
+    requestPlaceholder: 'Waiting...',
   });
-
-  // ==================== Event ====================
   const onSubmit = (nextContent: string) => {
     const trimmedContent = nextContent.trim();
     if (!trimmedContent) {
@@ -297,7 +261,6 @@ const Independent: React.FC = () => {
     onRequest(info.data.description as string);
   };
 
-  // ==================== Nodes ====================
   const placeholderNode = (
     <Space direction="vertical" size={25} className={styles.placeholder}>
       <Welcome
@@ -329,7 +292,6 @@ const Independent: React.FC = () => {
     role: status === 'local' ? 'local' : 'ai',
     content: message,
   }));
-
   const [value, setValue] = useState('');
 
   // ==================== Render =================
