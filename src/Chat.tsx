@@ -5,19 +5,26 @@ import {
   Welcome,
   useXAgent,
   useXChat,
+  Suggestion
 } from '@ant-design/x';
 import { createStyles } from 'antd-style';
 import { useState } from 'react';
 import { UserOutlined } from '@ant-design/icons';
+import { generateText, getWalletBalance, transferToken, getTokenAddress } from './services/agent'
+import { message } from 'antd';
+import { red, blue, green } from '@ant-design/colors';
+import { useAccount, useWriteContract, useSendTransaction, usePrepareTransactionRequest } from 'wagmi';
+import { parseUnits } from 'viem'
 
 import {
-  CommentOutlined,
+  PullRequestOutlined,
+  PropertySafetyOutlined,
+  RedEnvelopeOutlined,
   FireOutlined,
-  HeartOutlined,
   ReadOutlined,
-  SmileOutlined,
 } from '@ant-design/icons';
 import { Avatar, type GetProp, Space } from 'antd';
+
 
 const renderTitle = (icon: React.ReactElement, title: string) => (
   <Space align="start">
@@ -25,13 +32,6 @@ const renderTitle = (icon: React.ReactElement, title: string) => (
     <span>{title}</span>
   </Space>
 );
-
-// const defaultConversationsItems = [
-//   {
-//     key: '0',
-//     label: 'What is Ant Design X?',
-//   },
-// ];
 
 const useStyle = createStyles(({ token, css }) => {
   return {
@@ -118,7 +118,7 @@ const placeholderPromptsItems: GetProp<typeof Prompts, 'items'> = [
   {
     key: '1',
     label: renderTitle(<FireOutlined style={{ color: '#FF4D4F' }} />, 'Hot Topics'),
-    description: 'What are you interested in?',
+    // description: 'What are you interested in?',
     children: [
       {
         key: '1-1',
@@ -136,38 +136,20 @@ const placeholderPromptsItems: GetProp<typeof Prompts, 'items'> = [
   },
   {
     key: '2',
-    label: renderTitle(<ReadOutlined style={{ color: '#1890FF' }} />, 'Design Guide'),
-    description: 'How to design a good product?',
+    label: renderTitle(<ReadOutlined style={{ color: '#1890FF' }} />, 'Hot prompts'),
+    // description: 'How to design a good product?',
     children: [
       {
         key: '2-1',
-        icon: <HeartOutlined />,
-        description: `Know the well`,
+        icon: <PropertySafetyOutlined style={{ color: blue.primary }} />,
+        description: `查询余额`,
       },
       {
         key: '2-2',
-        icon: <SmileOutlined />,
-        description: `Set the AI role`,
-      },
-      {
-        key: '2-3',
-        icon: <CommentOutlined />,
-        description: `Express the feeling`,
+        icon: <PullRequestOutlined style={{ color: green.primary }} />,
+        description: `查询USDT代币地址`,
       },
     ],
-  },
-];
-
-const senderPromptsItems: GetProp<typeof Prompts, 'items'> = [
-  {
-    key: '1',
-    description: 'Hot Topics',
-    icon: <FireOutlined style={{ color: '#FF4D4F' }} />,
-  },
-  {
-    key: '2',
-    description: 'Design Guide',
-    icon: <ReadOutlined style={{ color: '#1890FF' }} />,
   },
 ];
 
@@ -189,22 +171,110 @@ const roles: GetProp<typeof Bubble.List, 'roles'> = {
   },
 };
 
+type SuggestionItems = Exclude<GetProp<typeof Suggestion, 'items'>, () => void>;
+
+const suggestions: SuggestionItems = [
+  { label: '查询余额', value: '查询余额' },
+  { label: '查询USDT代币地址', value: '查询USDT代币地址' },
+];
+
 const Independent: React.FC = () => {
   // ==================== Style ====================
   const { styles } = useStyle();
+  const { address } = useAccount();
 
-  // ==================== State ====================
+  const { sendTransaction } = useSendTransaction();
 
-  const [content, setContent] = useState('');
+  const { writeContract } = useWriteContract()
 
-
-  // const [activeKey, setActiveKey] = useState(defaultConversationsItems[0].key);
-
-
-  // ==================== Runtime ====================
   const [agent] = useXAgent({
     request: async ({ message }, { onSuccess }) => {
-      onSuccess(`Mock success return. You said: ${message}`);
+      // onSuccess(`Mock success return. You said: ${message}`);
+
+      let result = null;
+      try {
+        if (message === '查询余额' && address) {
+          result = await getWalletBalance(address)
+        } else if (message === '查询USDT代币地址') {
+          result = await getTokenAddress()
+        } else {
+          result = await generateText({
+            userInput: message || ''
+          });
+        }
+
+        console.log(result)
+        onSuccess(result?.message || result || '抱歉，我没有找到合适的回答');
+
+        // result = {
+        //   "action": "transfer",
+        //   "transaction_data": {
+        //     "from": "0x456...",
+        //     "to": "0x789...",
+        //     "amount": 100,
+        //     "token_name": "USDC",
+        //     "token_address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+        //     "requires_signature": true
+        //   },
+        //   "message": "Please confirm transfer of 100 USDC from 0x456... to 0x789..."
+        // }
+        if (result?.action === 'transfer') {
+          const { transaction_data } = result;
+          if (address?.toLowerCase() === transaction_data.from.toLowerCase()) {
+            if (transaction_data.token_name === 'S') {
+              // 原生代币转账
+              sendTransaction({
+                to: transaction_data.to,
+                value: parseUnits(transaction_data.amount.toString(), 24),
+              });
+
+            } else {
+              // ERC20 代币转账
+              const ERC20_ABI = [
+                {
+                  constant: false,
+                  inputs: [
+                    { name: '_to', type: 'address' },
+                    { name: '_value', type: 'uint256' },
+                  ],
+                  name: 'transfer',
+                  outputs: [{ name: '', type: 'bool' }],
+                  type: 'function',
+                },
+                {
+                  constant: true,
+                  inputs: [],
+                  name: 'decimals',
+                  outputs: [{ name: '', type: 'uint8' }],
+                  type: 'function',
+                }
+              ];
+
+              // const requiresSignature = transaction_data.requires_signature;
+
+              // if (requiresSignature) {
+              //   //usePrepareTransactionRequest  预执行交易
+              // } else {
+              writeContract({
+                address: transaction_data.token_address as `0x${string}`, // 添加类型断言
+                abi: ERC20_ABI,
+                functionName: 'transfer',
+                args: [
+                  transaction_data.to as `0x${string}`, // 添加类型断言
+                  parseUnits(transaction_data.amount.toString(), 6), // USDT 通常是 6 位精度
+                ],
+              })
+            }
+            // }
+          } else {
+            onSuccess('请使用正确的钱包地址进行转账');
+            return;
+          }
+        }
+      } catch (error) {
+        console.error('生成回答失败:', error);
+        onSuccess('抱歉，服务出现了一些问题，请稍后再试');
+      }
     },
   });
 
@@ -212,17 +282,15 @@ const Independent: React.FC = () => {
     agent,
   });
 
-  // useEffect(() => {
-  //   if (activeKey !== undefined) {
-  //     setMessages([]);
-  //   }
-  // }, [activeKey]);
-
   // ==================== Event ====================
   const onSubmit = (nextContent: string) => {
-    if (!nextContent) return;
-    onRequest(nextContent);
-    setContent('');
+    const trimmedContent = nextContent.trim();
+    if (!trimmedContent) {
+      message.warning('请输入内容');
+      return;
+    }
+
+    onRequest(trimmedContent);
   };
 
   const onPromptsItemClick: GetProp<typeof Prompts, 'onItemClick'> = (info) => {
@@ -262,28 +330,50 @@ const Independent: React.FC = () => {
     content: message,
   }));
 
+  const [value, setValue] = useState('');
 
   // ==================== Render =================
   return (
     <div className={styles.layout}>
-
       <div className={styles.chat}>
-        {/* 🌟 消息列表 */}
         <Bubble.List
           items={items.length > 0 ? items : [{ content: placeholderNode, variant: 'borderless' }]}
           roles={roles}
           className={styles.messages}
         />
-        {/* 🌟 提示词 */}
-        <Prompts items={senderPromptsItems} onItemClick={onPromptsItemClick} />
-        {/* 🌟 输入框 */}
-        <Sender
-          value={content}
-          onSubmit={onSubmit}
-          onChange={setContent}
-          loading={agent.isRequesting()}
-          className={styles.sender}
-        />
+        <Suggestion
+          items={suggestions}
+          onSelect={(itemVal) => {
+            onSubmit(itemVal)
+            setValue('')
+          }}
+        >
+          {({ onTrigger, onKeyDown }) => {
+            return (
+              <Sender
+                value={value}
+                onSubmit={(nextVal) => {
+                  if (nextVal !== '/') {
+                    onSubmit(nextVal)
+                  }
+                  setValue('')
+                }}
+                onChange={(nextVal) => {
+                  if (nextVal === '/') {
+                    onTrigger();
+                  } else if (!nextVal) {
+                    onTrigger(false);
+                  }
+                  setValue(nextVal);
+                }}
+                loading={agent.isRequesting()}
+                className={styles.sender}
+                onKeyDown={onKeyDown}
+                placeholder="输入 / 获取建议"
+              />
+            );
+          }}
+        </Suggestion>
       </div>
     </div>
   );

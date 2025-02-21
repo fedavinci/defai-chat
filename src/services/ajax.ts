@@ -1,10 +1,10 @@
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
 import { message } from 'antd'
 // import { getToken } from '../utils/user-token'
 
 const instance = axios.create({
   baseURL: 'http://3.0.177.84:8000',
-  timeout: 10 * 1000,
+  timeout: 30 * 1000,
 })
 
 // request 拦截：每次请求都带上 token
@@ -19,9 +19,9 @@ instance.interceptors.request.use(
 // response 拦截：统一处理 errno 和 msg
 instance.interceptors.response.use(res => {
   const resData = (res.data || {}) as ResType
-  const { errno, data, msg } = resData
+  const { status, result, msg } = resData
 
-  if (errno !== 0) {
+  if (status !== "success") {
     // 错误提示
     if (msg) {
       message.error(msg)
@@ -30,14 +30,14 @@ instance.interceptors.response.use(res => {
     throw new Error(msg)
   }
 
-  return data as any
+  return result as any
 })
 
 export default instance
 
 export type ResType = {
-  errno: number
-  data?: ResDataType
+  status: string
+  result?: ResDataType
   msg?: string
 }
 

@@ -46,7 +46,7 @@ export async function transferToken(
 
 // 查询代币合约地址
 export async function getTokenAddress(
-  tokenSymbol: string
+  tokenSymbol: string = 'USDT'
 ): Promise<ResDataType> {
   return generateText({
     userInput: `查询 ${tokenSymbol} 代币的合约地址`

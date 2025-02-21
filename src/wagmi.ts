@@ -1,6 +1,6 @@
 import { getDefaultConfig } from '@rainbow-me/rainbowkit';
 import {
-  sepolia,
+  // sepolia,
   sonic,
 } from 'wagmi/chains';
 
@@ -17,7 +17,7 @@ export const config = getDefaultConfig({
   projectId: '909561d7e8646fc7ce17702fd6209efc',
   chains: [
     sonicWithIcon,
-    ...(import.meta.env.VITE_ENABLE_TESTNETS === 'true' ? [sepolia] : []),
+    // ...(import.meta.env.VITE_ENABLE_TESTNETS === 'true' ? [sepolia] : []),
   ],
   ssr: true,
 });
