@@ -212,17 +212,16 @@ const Independent: React.FC = () => {
 
         if (result?.action === 'transfer') {
           const { transaction_data } = result;
-          if (address?.toLowerCase() !== transaction_data.from.toLowerCase()) {
-            onSuccess('请使用正确的钱包地址进行转账');
-            return;
-          }
+          // if (address?.toLowerCase() !== transaction_data.from.toLowerCase()) {
+          //   message.warning('请使用正确的钱包地址进行转账');
+          //   return;
+          // }
           if (transaction_data.token_name === 'S') {
             // 原生代币转账
             sendTransaction({
               to: transaction_data.to,
               value: parseUnits(transaction_data.amount.toString(), 18),
             });
-
           } else {
             // ERC20 代币转账
             writeContract({
