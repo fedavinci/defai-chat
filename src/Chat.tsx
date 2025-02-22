@@ -10,7 +10,7 @@ import {
 import { createStyles } from 'antd-style';
 import { useState } from 'react';
 import { UserOutlined } from '@ant-design/icons';
-import { generateText, getWalletBalance, transferToken, getTokenAddress } from './services/agent'
+import { generateText, getWalletBalance, getTokenAddress } from './services/agent'
 import { message } from 'antd';
 import { red, blue, green } from '@ant-design/colors';
 import { useAccount, useWriteContract, useSendTransaction, usePrepareTransactionRequest, useReadContract } from 'wagmi';
@@ -48,19 +48,17 @@ const useStyle = createStyles(({ token, css }) => {
   return {
     layout: css`
         width: 100%;
-        min-width: 1000px;
         height: 722px;
         border-radius: ${token.borderRadius}px;
         display: flex;
         background: ${token.colorBgContainer};
         font-family: AlibabaPuHuiTi, ${token.fontFamily}, sans-serif;
-  
         .ant-prompts {
           color: ${token.colorText};
         }
       `,
     welcome: css`
-       min-width:500px
+       min-width: 600px;
       `,
     menu: css`
         background: ${token.colorBgLayout}80;
@@ -139,10 +137,10 @@ const placeholderPromptsItems: GetProp<typeof Prompts, 'items'> = [
         key: '1-2',
         description: `What's AGI?`,
       },
-      {
-        key: '1-3',
-        description: `Where is the doc?`,
-      },
+      // {
+      //   key: '1-3',
+      //   description: `Where is the doc?`,
+      // },
     ],
   },
   {
@@ -198,7 +196,7 @@ const Independent: React.FC = () => {
       try {
         if (message === 'Check Balance' && address) {
           result = await getWalletBalance(address)
-        } else if (message === 'Check USDT token address') {
+        } else if (message === 'Check USDT Token Address') {
           result = await getTokenAddress()
         } else {
           result = await generateText({
