@@ -16,6 +16,7 @@ import { red, blue, green } from '@ant-design/colors';
 import { useAccount, useWriteContract, useSendTransaction, usePrepareTransactionRequest, useReadContract } from 'wagmi';
 
 import { parseUnits, erc20Abi } from 'viem'
+import markdownit from 'markdown-it';
 
 import {
   PullRequestOutlined,
@@ -24,7 +25,17 @@ import {
   ReadOutlined,
 } from '@ant-design/icons';
 import { Avatar, type GetProp, Space } from 'antd';
+import { Typography } from 'antd';
+import type { BubbleProps } from '@ant-design/x';
 
+const md = markdownit({ html: true, breaks: true });
+
+const renderMarkdown: BubbleProps['messageRender'] = (content) => (
+  <Typography >
+    {/* biome-ignore lint/security/noDangerouslySetInnerHtml: used in demo */}
+    <div className="renderMarkdown" dangerouslySetInnerHTML={{ __html: md.render(content) }} />
+  </Typography>
+)
 
 const renderTitle = (icon: React.ReactElement, title: string) => (
   <Space align="start">
@@ -142,12 +153,12 @@ const placeholderPromptsItems: GetProp<typeof Prompts, 'items'> = [
       {
         key: '2-1',
         icon: <PropertySafetyOutlined style={{ color: blue.primary }} />,
-        description: `查询余额`,
+        description: `Check Balance`,
       },
       {
         key: '2-2',
         icon: <PullRequestOutlined style={{ color: green.primary }} />,
-        description: `查询USDT代币地址`,
+        description: `Check USDT Token Address`,
       },
     ],
   },
@@ -169,8 +180,8 @@ const roles: GetProp<typeof Bubble.List, 'roles'> = {
 type SuggestionItems = Exclude<GetProp<typeof Suggestion, 'items'>, () => void>;
 
 const suggestions: SuggestionItems = [
-  { label: '查询余额', value: '查询余额' },
-  { label: '查询USDT代币地址', value: '查询USDT代币地址' },
+  { label: 'Check Balance', value: 'Check Balance' },
+  { label: 'Check USDT Token Address', value: 'Check USDT Token Address' },
 ];
 
 const Independent: React.FC = () => {
@@ -182,20 +193,19 @@ const Independent: React.FC = () => {
   const { writeContract } = useWriteContract()
 
   const [agent] = useXAgent({
-    request: async ({ message }, { onSuccess }) => {
+    request: async ({ message }, { onSuccess, onError }) => {
       let result = null;
       try {
-        if (message === '查询余额' && address) {
+        if (message === 'Check Balance' && address) {
           result = await getWalletBalance(address)
-        } else if (message === '查询USDT代币地址') {
+        } else if (message === 'Check USDT token address') {
           result = await getTokenAddress()
         } else {
           result = await generateText({
             userInput: message || ''
           });
         }
-
-        onSuccess(result?.message || result || '抱歉，我没有找到合适的回答');
+        onSuccess(result?.message || result || "Sorry, I couldn't find a suitable answer.");
 
         // result = {
         //   "action": "transfer",
@@ -212,10 +222,6 @@ const Independent: React.FC = () => {
 
         if (result?.action === 'transfer') {
           const { transaction_data } = result;
-          // if (address?.toLowerCase() !== transaction_data.from.toLowerCase()) {
-          //   message.warning('请使用正确的钱包地址进行转账');
-          //   return;
-          // }
           if (transaction_data.token_name === 'S') {
             // 原生代币转账
             sendTransaction({
@@ -236,8 +242,8 @@ const Independent: React.FC = () => {
           }
         }
       } catch (error) {
-        console.error('生成回答失败:', error);
-        onSuccess('抱歉，服务出现了一些问题，请稍后再试');
+        console.error('Failed to generate a response:', error);
+        onError(new Error());
       }
     },
   });
@@ -245,11 +251,12 @@ const Independent: React.FC = () => {
   const { onRequest, messages } = useXChat({
     agent,
     requestPlaceholder: 'Waiting...',
+    requestFallback: 'Sorry, I can not answer your question now',
   });
   const onSubmit = (nextContent: string) => {
     const trimmedContent = nextContent.trim();
     if (!trimmedContent) {
-      message.warning('请输入内容');
+      message.warning('Please enter content');
       return;
     }
 
@@ -290,6 +297,7 @@ const Independent: React.FC = () => {
     loading: status === 'loading',
     role: status === 'local' ? 'local' : 'ai',
     content: message,
+    messageRender: renderMarkdown,
   }));
   const [value, setValue] = useState('');
 
@@ -330,7 +338,7 @@ const Independent: React.FC = () => {
                 loading={agent.isRequesting()}
                 className={styles.sender}
                 onKeyDown={onKeyDown}
-                placeholder="输入 / 获取建议"
+                placeholder="Enter / to get suggestions"
               />
             );
           }}

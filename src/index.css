@@ -5,3 +5,7 @@ body {
 ::-webkit-scrollbar {
     display: none; /* Chrome Safari */
   }
+
+  .renderMarkdown p {
+    margin: 0 !important;
+  }
