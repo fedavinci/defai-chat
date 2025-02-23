@@ -70,7 +70,7 @@ const App = () => {
           )}
         </ConnectButton.Custom>
       </div>
-      {isConnected ? <Chat /> : <p>请连接钱包以继续</p>}
+      {isConnected ? <Chat /> : <p>Please connect your wallet to continue</p>}
     </div>
   );
 };
