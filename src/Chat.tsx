@@ -124,25 +124,25 @@ const useStyle = createStyles(({ token, css }) => {
 });
 
 const placeholderPromptsItems: GetProp<typeof Prompts, 'items'> = [
-  {
-    key: '1',
-    label: renderTitle(<FireOutlined style={{ color: '#FF4D4F' }} />, 'Hot Topics'),
-    // description: 'What are you interested in?',
-    children: [
-      {
-        key: '1-1',
-        description: `What's new in X?`,
-      },
-      {
-        key: '1-2',
-        description: `What's AGI?`,
-      },
-      // {
-      //   key: '1-3',
-      //   description: `Where is the doc?`,
-      // },
-    ],
-  },
+  // {
+  //   key: '1',
+  //   label: renderTitle(<FireOutlined style={{ color: '#FF4D4F' }} />, 'Hot Topics'),
+  //   // description: 'What are you interested in?',
+  //   children: [
+  //     {
+  //       key: '1-1',
+  //       description: `What's new in X?`,
+  //     },
+  //     {
+  //       key: '1-2',
+  //       description: `What's AGI?`,
+  //     },
+  //     // {
+  //     //   key: '1-3',
+  //     //   description: `Where is the doc?`,
+  //     // },
+  //   ],
+  // },
   {
     key: '2',
     label: renderTitle(<ReadOutlined style={{ color: '#1890FF' }} />, 'Hot prompts'),
@@ -271,19 +271,19 @@ const Independent: React.FC = () => {
         className={styles.welcome}
         variant="borderless"
         icon="https://mdn.alipayobjects.com/huamei_iwk9zp/afts/img/A*s5sNRo5LjfQAAAAAAAAAAAAADgCCAQ/fmt.webp"
-        title="Hello, I'm DeFAI robot~"
-        description="AGI product interface solution, create a better intelligent vision~"
+        title="Hello, I'm SonicTokenSafe."
+        description="SonicTokenSafe is a comprehensive token management and security tool built on the Sonic blockchain. It provides users with a range of functionalities to interact with their tokens securely and efficiently, leveraging the high performance of the Sonic blockchain and the AI capabilities of the ZerePy framework."
       />
       <Prompts
         title="Do you want?"
         items={placeholderPromptsItems}
         styles={{
-          list: {
-            width: '100%',
-          },
-          item: {
-            flex: 1,
-          },
+          // list: {
+          //   width: '100%',
+          // },
+          // item: {
+          //   flex: 1,
+          // },
         }}
         onItemClick={onPromptsItemClick}
       />
