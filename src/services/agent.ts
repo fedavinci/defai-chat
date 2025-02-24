@@ -52,3 +52,12 @@ export async function getTokenAddress(
     userInput: `Check ${tokenSymbol} Token contract address`
   })
 }
+
+export async function getTokenRank(): Promise<ResDataType> {
+  const url = '/agent/action'
+  const data = await axios.post(url, {
+    connection: 'deepseek',
+    action: 'get-hot-tokens-json',
+  })
+  return data
+}

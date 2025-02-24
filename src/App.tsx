@@ -6,6 +6,7 @@ import { useAccount } from 'wagmi';
 import { Spin } from 'antd';
 
 import Chat from './Chat';
+import TokenRank from './TokenRank';
 
 const useStyle = createStyles(({ css }) => ({
   app: css`
@@ -70,6 +71,7 @@ const App = () => {
           )}
         </ConnectButton.Custom>
       </div>
+      {isConnected ? <TokenRank /> : null}
       {isConnected ? <Chat /> : <p>Please connect your wallet to continue</p>}
     </div>
   );
