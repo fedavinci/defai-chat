@@ -261,9 +261,9 @@ const Independent: React.FC = () => {
     onRequest(trimmedContent);
   };
 
-  const onPromptsItemClick: GetProp<typeof Prompts, 'onItemClick'> = (info) => {
-    onRequest(info.data.description as string);
-  };
+  // const onPromptsItemClick: GetProp<typeof Prompts, 'onItemClick'> = (info) => {
+  //   onRequest(info.data.description as string);
+  // };
 
   const placeholderNode = (
     <Space direction="vertical" size={25} className={styles.placeholder}>
@@ -274,7 +274,7 @@ const Independent: React.FC = () => {
         title="Hello, I'm SonicTokenSafe."
         description="SonicTokenSafe is a comprehensive token management and security tool built on the Sonic blockchain. It provides users with a range of functionalities to interact with their tokens securely and efficiently, leveraging the high performance of the Sonic blockchain and the AI capabilities of the ZerePy framework."
       />
-      <Prompts
+      {/* <Prompts
         title="Do you want?"
         items={placeholderPromptsItems}
         styles={{
@@ -286,7 +286,7 @@ const Independent: React.FC = () => {
           // },
         }}
         onItemClick={onPromptsItemClick}
-      />
+      /> */}
     </Space>
   );
 
@@ -308,7 +308,7 @@ const Independent: React.FC = () => {
           roles={roles}
           className={styles.messages}
         />
-        <Suggestion
+        {/* <Suggestion
           items={suggestions}
           onSelect={(itemVal) => {
             onSubmit(itemVal)
@@ -340,7 +340,29 @@ const Independent: React.FC = () => {
               />
             );
           }}
-        </Suggestion>
+        </Suggestion> */}
+
+        <Sender
+          value={value}
+          onSubmit={(nextVal) => {
+            // if (nextVal !== '/') {
+            // }
+            onSubmit(nextVal)
+            setValue('')
+          }}
+          onChange={(nextVal) => {
+            // if (nextVal === '/') {
+            //   onTrigger();
+            // } else if (!nextVal) {
+            //   onTrigger(false);
+            // }
+            setValue(nextVal);
+          }}
+          loading={agent.isRequesting()}
+          className={styles.sender}
+        // onKeyDown={onKeyDown}
+        // placeholder="Enter / to get suggestions"
+        />
       </div>
     </div>
   );
