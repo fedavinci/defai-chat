@@ -27,6 +27,7 @@ import {
 import { Avatar, type GetProp, Space } from 'antd';
 import { Typography } from 'antd';
 import type { BubbleProps } from '@ant-design/x';
+import { Image } from 'antd';
 
 const md = markdownit({ html: true, breaks: true });
 
@@ -166,7 +167,7 @@ const roles: GetProp<typeof Bubble.List, 'roles'> = {
   ai: {
     placement: 'start',
     typing: { step: 3 },
-    avatar: { icon: <Avatar src="https://mdn.alipayobjects.com/huamei_iwk9zp/afts/img/A*s5sNRo5LjfQAAAAAAAAAAAAADgCCAQ/fmt.webp" />, style: { background: '#fde3cf' } },
+    avatar: { icon: <Avatar src="/logo.png" />, style: { background: '#fde3cf' } },
   },
   local: {
     placement: 'end',
@@ -270,7 +271,7 @@ const Independent: React.FC = () => {
       <Welcome
         className={styles.welcome}
         variant="borderless"
-        icon="https://mdn.alipayobjects.com/huamei_iwk9zp/afts/img/A*s5sNRo5LjfQAAAAAAAAAAAAADgCCAQ/fmt.webp"
+        icon={<Image src='/logo.png' width={60} height={60}/>}
         title="Hello, I'm SonicTokenSafe."
         description="SonicTokenSafe is a comprehensive token management and security tool built on the Sonic blockchain. It provides users with a range of functionalities to interact with their tokens securely and efficiently, leveraging the high performance of the Sonic blockchain and the AI capabilities of the ZerePy framework."
       />

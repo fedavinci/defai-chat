@@ -16,7 +16,7 @@ const useStyle = createStyles(({ token, css }) => {
         rank: css`
             position: absolute;
             left: 20px;
-            top: 60px;
+            top: 0px;
             padding: 20px;
             background: ${token.colorBgContainer};
             border-radius: ${token.borderRadius}px;
