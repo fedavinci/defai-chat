@@ -5,8 +5,9 @@ import { useState, useEffect } from 'react';
 import { useAccount } from 'wagmi';
 import { Spin } from 'antd';
 
-import Chat from './Chat';
-import TokenRank from './TokenRank';
+import Chat from './components/Chat';
+import TokenRank from './components/TokenRank';
+import NFTRank from './components/NFTRank';
 
 const useStyle = createStyles(({ css }) => ({
   app: css`
@@ -73,6 +74,7 @@ const App = () => {
       </div>
       {isConnected ? <TokenRank /> : null}
       {isConnected ? <Chat /> : <p>Please connect your wallet to continue</p>}
+      {isConnected ? <NFTRank /> : null}
     </div>
   );
 };

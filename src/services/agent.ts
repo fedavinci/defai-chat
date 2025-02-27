@@ -60,3 +60,12 @@ export async function getTokenRank(): Promise<ResDataType> {
   })
   return data
 }
+
+export async function getNFTRank(): Promise<ResDataType> {
+  const url = '/agent/action'
+  const data = await axios.post(url, {
+    connection: 'deepseek',
+    action: 'get-hot-nfts-json',
+  })
+  return data
+}

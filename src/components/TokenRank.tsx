@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getTokenRank } from './services/agent'
+import { getTokenRank } from '../services/agent'
 import { createStyles } from 'antd-style';
 import { List, Avatar, Typography } from 'antd';
 
@@ -16,7 +16,7 @@ const useStyle = createStyles(({ token, css }) => {
         rank: css`
             position: absolute;
             left: 20px;
-            top: 0px;
+            top: 70px;
             padding: 20px;
             background: ${token.colorBgContainer};
             border-radius: ${token.borderRadius}px;
@@ -121,9 +121,9 @@ export default function TokenRank() {
                 renderItem={(item) => (
                     <List.Item>
                         <div className={styles.tokenInfo}>
-                            <Avatar 
-                                src={item.imageUrl} 
-                                size={40} 
+                            <Avatar
+                                src={item.imageUrl}
+                                size={40}
                                 style={{ cursor: 'pointer' }}
                                 onClick={() => window.open(item.url, '_blank')}
                             />

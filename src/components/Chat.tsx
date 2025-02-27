@@ -10,7 +10,7 @@ import {
 import { createStyles } from 'antd-style';
 import { useState } from 'react';
 import { UserOutlined } from '@ant-design/icons';
-import { generateText, getWalletBalance, getTokenAddress } from './services/agent'
+import { generateText, getWalletBalance, getTokenAddress } from '../services/agent'
 import { message } from 'antd';
 import { red, blue, green } from '@ant-design/colors';
 import { useAccount, useWriteContract, useSendTransaction, usePrepareTransactionRequest, useReadContract } from 'wagmi';
