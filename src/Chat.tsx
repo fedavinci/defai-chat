@@ -38,12 +38,12 @@ const renderMarkdown: BubbleProps['messageRender'] = (content) => (
   </Typography>
 )
 
-const renderTitle = (icon: React.ReactElement, title: string) => (
-  <Space align="start">
-    {icon}
-    <span>{title}</span>
-  </Space>
-);
+// const renderTitle = (icon: React.ReactElement, title: string) => (
+//   <Space align="start">
+//     {icon}
+//     <span>{title}</span>
+//   </Space>
+// );
 
 const useStyle = createStyles(({ token, css }) => {
   return {
@@ -124,49 +124,49 @@ const useStyle = createStyles(({ token, css }) => {
   };
 });
 
-const placeholderPromptsItems: GetProp<typeof Prompts, 'items'> = [
-  // {
-  //   key: '1',
-  //   label: renderTitle(<FireOutlined style={{ color: '#FF4D4F' }} />, 'Hot Topics'),
-  //   // description: 'What are you interested in?',
-  //   children: [
-  //     {
-  //       key: '1-1',
-  //       description: `What's new in X?`,
-  //     },
-  //     {
-  //       key: '1-2',
-  //       description: `What's AGI?`,
-  //     },
-  //     // {
-  //     //   key: '1-3',
-  //     //   description: `Where is the doc?`,
-  //     // },
-  //   ],
-  // },
-  {
-    key: '2',
-    label: renderTitle(<ReadOutlined style={{ color: '#1890FF' }} />, 'Hot prompts'),
-    // description: 'How to design a good product?',
-    children: [
-      {
-        key: '2-1',
-        icon: <PropertySafetyOutlined style={{ color: blue.primary }} />,
-        description: `Check Balance`,
-      },
-      {
-        key: '2-2',
-        icon: <PullRequestOutlined style={{ color: green.primary }} />,
-        description: `Check USDT Token Address`,
-      },
-    ],
-  },
-];
+// const placeholderPromptsItems: GetProp<typeof Prompts, 'items'> = [
+//   // {
+//   //   key: '1',
+//   //   label: renderTitle(<FireOutlined style={{ color: '#FF4D4F' }} />, 'Hot Topics'),
+//   //   // description: 'What are you interested in?',
+//   //   children: [
+//   //     {
+//   //       key: '1-1',
+//   //       description: `What's new in X?`,
+//   //     },
+//   //     {
+//   //       key: '1-2',
+//   //       description: `What's AGI?`,
+//   //     },
+//   //     // {
+//   //     //   key: '1-3',
+//   //     //   description: `Where is the doc?`,
+//   //     // },
+//   //   ],
+//   // },
+//   {
+//     key: '2',
+//     label: renderTitle(<ReadOutlined style={{ color: '#1890FF' }} />, 'Hot prompts'),
+//     // description: 'How to design a good product?',
+//     children: [
+//       {
+//         key: '2-1',
+//         icon: <PropertySafetyOutlined style={{ color: blue.primary }} />,
+//         description: `Check Balance`,
+//       },
+//       {
+//         key: '2-2',
+//         icon: <PullRequestOutlined style={{ color: green.primary }} />,
+//         description: `Check USDT Token Address`,
+//       },
+//     ],
+//   },
+// ];
 
 const roles: GetProp<typeof Bubble.List, 'roles'> = {
   ai: {
     placement: 'start',
-    typing: { step: 3 },
+    // typing: { step: 10 },
     avatar: { icon: <Avatar src="/logo.png" />, style: { background: '#fde3cf' } },
   },
   local: {
@@ -195,16 +195,18 @@ const Independent: React.FC = () => {
     request: async ({ message }, { onSuccess, onError }) => {
       let result = null;
       try {
-        if (message === 'Check Balance' && address) {
+        if (message && message.toUpperCase() === 'CHECK BALANCE' && address) {
           result = await getWalletBalance(address)
-        } else if (message === 'Check USDT Token Address') {
+        }
+        else if (message && message.toUpperCase() === 'CHECK USDT TOKEN ADDRESS') {
           result = await getTokenAddress()
-        } else {
+        }
+        else {
           result = await generateText({
             userInput: message || ''
           });
         }
-        onSuccess(result?.message || result || "Sorry, I couldn't find a suitable answer.");
+        onSuccess(result?.message || result?.error || result || "Sorry, I couldn't find a suitable answer.");
 
         // result = {
         //   "action": "transfer",
@@ -271,7 +273,7 @@ const Independent: React.FC = () => {
       <Welcome
         className={styles.welcome}
         variant="borderless"
-        icon={<Image src='/logo.png' width={60} height={60}/>}
+        icon={<Image src='/logo.png' width={60} height={60} />}
         title="Hello, I'm SonicTokenSafe."
         description="SonicTokenSafe is a comprehensive token management and security tool built on the Sonic blockchain. It provides users with a range of functionalities to interact with their tokens securely and efficiently, leveraging the high performance of the Sonic blockchain and the AI capabilities of the ZerePy framework."
       />
@@ -309,7 +311,7 @@ const Independent: React.FC = () => {
           roles={roles}
           className={styles.messages}
         />
-        {/* <Suggestion
+        <Suggestion
           items={suggestions}
           onSelect={(itemVal) => {
             onSubmit(itemVal)
@@ -329,7 +331,7 @@ const Independent: React.FC = () => {
                 onChange={(nextVal) => {
                   if (nextVal === '/') {
                     onTrigger();
-                  } else if (!nextVal) {
+                  } else if (!suggestions.map(x => x.label).includes(nextVal)) {
                     onTrigger(false);
                   }
                   setValue(nextVal);
@@ -341,9 +343,9 @@ const Independent: React.FC = () => {
               />
             );
           }}
-        </Suggestion> */}
+        </Suggestion>
 
-        <Sender
+        {/* <Sender
           value={value}
           onSubmit={(nextVal) => {
             // if (nextVal !== '/') {
@@ -359,11 +361,15 @@ const Independent: React.FC = () => {
             // }
             setValue(nextVal);
           }}
+          onCancel={() => {
+            // setValue('')
+            console.log('oncancel')
+          }}
           loading={agent.isRequesting()}
           className={styles.sender}
         // onKeyDown={onKeyDown}
         // placeholder="Enter / to get suggestions"
-        />
+        /> */}
       </div>
     </div>
   );

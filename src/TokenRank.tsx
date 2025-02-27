@@ -53,21 +53,21 @@ export default function TokenRank() {
     useEffect(() => {
         async function fetchTokenRank() {
             try {
-                const cachedData = localStorage.getItem(CACHE_KEY);
-                if (cachedData) {
-                    const { data, timestamp }: CacheData = JSON.parse(cachedData);
-                    if (Date.now() - timestamp < CACHE_EXPIRY) {
-                        setTokenRankData(data);
-                        return;
-                    }
-                }
+                // const cachedData = localStorage.getItem(CACHE_KEY);
+                // if (cachedData) {
+                //     const { data, timestamp }: CacheData = JSON.parse(cachedData);
+                //     if (Date.now() - timestamp < CACHE_EXPIRY) {
+                //         setTokenRankData(data);
+                //         return;
+                //     }
+                // }
 
                 const result = await getTokenRank();
-                const cacheData: CacheData = {
-                    data: result.data,
-                    timestamp: Date.now()
-                };
-                localStorage.setItem(CACHE_KEY, JSON.stringify(cacheData));
+                // const cacheData: CacheData = {
+                //     data: result.data,
+                //     timestamp: Date.now()
+                // };
+                // localStorage.setItem(CACHE_KEY, JSON.stringify(cacheData));
 
                 setTokenRankData(result.data);
             } catch (error) {
