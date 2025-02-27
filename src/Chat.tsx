@@ -365,32 +365,6 @@ const Independent: React.FC = () => {
             );
           }}
         </Suggestion>
-
-        {/* <Sender
-          value={value}
-          onSubmit={(nextVal) => {
-            // if (nextVal !== '/') {
-            // }
-            onSubmit(nextVal)
-            setValue('')
-          }}
-          onChange={(nextVal) => {
-            // if (nextVal === '/') {
-            //   onTrigger();
-            // } else if (!nextVal) {
-            //   onTrigger(false);
-            // }
-            setValue(nextVal);
-          }}
-          onCancel={() => {
-            // setValue('')
-            console.log('oncancel')
-          }}
-          loading={agent.isRequesting()}
-          className={styles.sender}
-        // onKeyDown={onKeyDown}
-        // placeholder="Enter / to get suggestions"
-        /> */}
       </div>
     </div>
   );

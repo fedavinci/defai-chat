@@ -69,6 +69,39 @@ export default function TokenRank() {
                 // };
                 // localStorage.setItem(CACHE_KEY, JSON.stringify(cacheData));
 
+                // console.log(result.data)
+                // [{
+                //     "address": "0xE5DA20F15420aD15DE0fa650600aFc998bbE3955",
+                //     "name": "Beets Staked Sonic",
+                //     "symbol": "stS",
+                //     "total_volume_24h": 25874821.169999998,
+                //     "max_liquidity_usd": 12421881.49,
+                //     "priceUsd": "0.7343",
+                //     "priceNative": "1.006715",
+                //     "chainId": "sonic",
+                //     "url": "https://dexscreener.com/sonic/0xde861c8fc9ab78fe00490c5a38813d26e2d09c95",
+                //     "websites": [
+                //         {
+                //             "label": "Website",
+                //             "url": "https://beets.fi/"
+                //         },
+                //         {
+                //             "label": "Docs",
+                //             "url": "https://docs.beets.fi/"
+                //         },
+                //         {
+                //             "label": "Discord",
+                //             "url": "https://beets.fi/discord"
+                //         }
+                //     ],
+                //     "socials": [
+                //         {
+                //             "type": "twitter",
+                //             "url": "https://x.com/beets_fi"
+                //         }
+                //     ],
+                //     "imageUrl": "https://dd.dexscreener.com/ds-data/tokens/sonic/0xe5da20f15420ad15de0fa650600afc998bbe3955.png?key=001ef0"
+                // }]
                 setTokenRankData(result.data);
             } catch (error) {
                 console.error('获取代币排行数据失败:', error);
@@ -88,7 +121,12 @@ export default function TokenRank() {
                 renderItem={(item) => (
                     <List.Item>
                         <div className={styles.tokenInfo}>
-                            <Avatar src={item.imageUrl} size={40} />
+                            <Avatar 
+                                src={item.imageUrl} 
+                                size={40} 
+                                style={{ cursor: 'pointer' }}
+                                onClick={() => window.open(item.url, '_blank')}
+                            />
                             <div className={styles.tokenMeta}>
                                 <div>{item.name}</div>
                                 <div className="symbol">{item.symbol}</div>
