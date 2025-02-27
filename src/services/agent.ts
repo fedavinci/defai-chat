@@ -33,16 +33,15 @@ export async function getWalletBalance(
 }
 
 // 转账代币
-// export async function transferToken(
-//   fromAddress: string,
-//   toAddress: string,
-//   amount: number,
-//   tokenSymbol: string = 'S'
-// ): Promise<ResDataType> {
-//   return generateText({
-//     userInput: `从钱包 ${fromAddress} 转 ${amount} ${tokenSymbol} 到 ${toAddress}`
-//   })
-// }
+export async function transferToken(
+  toAddress: string,
+  amount: number,
+  tokenSymbol: string = 'S'
+): Promise<ResDataType> {
+  return generateText({
+    userInput: `Transfer ${amount} ${tokenSymbol} to ${toAddress}`
+  })
+}
 
 // 查询代币合约地址
 export async function getTokenAddress(

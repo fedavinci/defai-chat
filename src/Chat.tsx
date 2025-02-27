@@ -181,6 +181,11 @@ type SuggestionItems = Exclude<GetProp<typeof Suggestion, 'items'>, () => void>;
 const suggestions: SuggestionItems = [
   { label: 'Check Balance', value: 'Check Balance' },
   { label: 'Check USDT Token Address', value: 'Check USDT Token Address' },
+  { label: 'Transfer S Tokens', value: 'Transfer S Tokens' },
+  { label: 'Get Hot Tokens', value: 'Get Hot Tokens' },
+  { label: 'Check Token Security', value: 'Check Token Security' },
+  { label: 'Get Hot NFTs', value: 'Get Hot NFTs' },
+  { label: 'Get NFT Info', value: 'Get NFT Info' },
 ];
 
 const Independent: React.FC = () => {
@@ -201,12 +206,18 @@ const Independent: React.FC = () => {
         else if (message && message.toUpperCase() === 'CHECK USDT TOKEN ADDRESS') {
           result = await getTokenAddress()
         }
+        else if (message && message.toUpperCase() === 'GET HOT TOKENS') {
+          result = await generateText({ userInput: 'Get Hot Tokens on Sonic Chain' })
+        }
+        else if (message && message.toUpperCase() === 'GET HOT NFTS') {
+          result = await generateText({ userInput: 'Get Hot NFTs on Sonic Chain' })
+        }
         else {
           result = await generateText({
             userInput: message || ''
           });
         }
-        onSuccess(result?.message || result?.error || result || "Sorry, I couldn't find a suitable answer.");
+        onSuccess(result?.message || result?.error || result?.security_summary || result || "Sorry, I couldn't find a suitable answer.");
 
         // result = {
         //   "action": "transfer",
@@ -314,6 +325,16 @@ const Independent: React.FC = () => {
         <Suggestion
           items={suggestions}
           onSelect={(itemVal) => {
+            if (itemVal === 'Transfer S Tokens') {
+              setValue('Transfer 1 S Token to This Address: ')
+              return;
+            } else if (itemVal === 'Check Token Security') {
+              setValue('Check Token Security for This Address: ')
+              return;
+            } else if (itemVal === 'Get NFT Info') {
+              setValue('Get NFT Info for This Address: ')
+              return;
+            }
             onSubmit(itemVal)
             setValue('')
           }}
