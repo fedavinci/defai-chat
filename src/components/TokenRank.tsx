@@ -16,11 +16,21 @@ const useStyle = createStyles(({ token, css }) => {
         rank: css`
             position: absolute;
             left: 20px;
-            top: 70px;
+            top: 40px;
             padding: 20px;
             background: ${token.colorBgContainer};
             border-radius: ${token.borderRadius}px;
             margin: 0 auto;
+            .ant-list{
+                max-height: 660px;
+                overflow: scroll;
+                .ant-list-item {
+                    padding:10px;
+                    &:hover {
+                        background: ${token.colorBgTextHover};
+                    }
+                }
+            }
         `,
         tokenInfo: css`
             display: flex;

@@ -181,11 +181,13 @@ type SuggestionItems = Exclude<GetProp<typeof Suggestion, 'items'>, () => void>;
 const suggestions: SuggestionItems = [
   { label: 'Check Balance', value: 'Check Balance' },
   { label: 'Check USDT Token Address', value: 'Check USDT Token Address' },
-  { label: 'Transfer S Tokens', value: 'Transfer S Tokens' },
+  // { label: 'Transfer S Tokens', value: 'Transfer S Tokens' },
   { label: 'Get Hot Tokens', value: 'Get Hot Tokens' },
   { label: 'Check Token Security', value: 'Check Token Security' },
   { label: 'Get Hot NFTs', value: 'Get Hot NFTs' },
   { label: 'Get NFT Info', value: 'Get NFT Info' },
+  { label: 'Get All Allora Prediction Topics', value: 'Get All Allora Prediction Topics' },
+  { label: 'Get Allora Prediction Result', value: 'Get Allora Prediction Result' },
 ];
 
 const Independent: React.FC = () => {
@@ -211,6 +213,9 @@ const Independent: React.FC = () => {
         }
         else if (message && message.toUpperCase() === 'GET HOT NFTS') {
           result = await generateText({ userInput: 'Get Hot NFTs on Sonic Chain' })
+        }
+        else if(message && message.toUpperCase() === 'Get All Allora Prediction Topics'.toUpperCase()) {
+          result = await generateText({ userInput: 'Get All Allora Prediction Topics' })
         }
         else {
           result = await generateText({
@@ -325,14 +330,18 @@ const Independent: React.FC = () => {
         <Suggestion
           items={suggestions}
           onSelect={(itemVal) => {
-            if (itemVal === 'Transfer S Tokens') {
-              setValue('Transfer 1 S Token to This Address: ')
-              return;
-            } else if (itemVal === 'Check Token Security') {
+            // if (itemVal === 'Transfer S Tokens') {
+            //   setValue('Transfer 1 S Token to This Address: ')
+            //   return;
+            // } else 
+            if (itemVal === 'Check Token Security') {
               setValue('Check Token Security for This Address: ')
               return;
             } else if (itemVal === 'Get NFT Info') {
               setValue('Get NFT Info for This Address: ')
+              return;
+            } else if(itemVal === 'Get Allora Prediction Result') {
+              setValue('Get Allora Prediction Result for This Topic ID: ')
               return;
             }
             onSubmit(itemVal)
