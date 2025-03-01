@@ -38,6 +38,14 @@ const useStyle = createStyles(({ token, css }) => {
             gap: 12px;
         `,
         tokenMeta: css`
+            max-width: 145px;
+            .name {
+                font-weight: 500;
+                font-size: 14px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
             .symbol {
                 color: ${token.colorTextSecondary};
                 font-size: 12px;
@@ -48,6 +56,12 @@ const useStyle = createStyles(({ token, css }) => {
             .price {
                 font-family: monospace;
                 font-weight: 500;
+                .price-change {
+                    color: ${token.colorSuccess};
+                    &.negative {
+                        color: ${token.colorError};
+                    }
+                }
             }
             .volume {
                 color: ${token.colorTextSecondary};
@@ -138,12 +152,17 @@ export default function TokenRank() {
                                 onClick={() => window.open(item.url, '_blank')}
                             />
                             <div className={styles.tokenMeta}>
-                                <div>{item.name}</div>
+                                <div className="name">{item.name}</div>
                                 <div className="symbol">{item.symbol}</div>
                             </div>
                         </div>
                         <div className={styles.tokenData}>
-                            <div className="price">${Number(item.priceUsd).toFixed(4)}</div>
+                            <div className="price">
+                                ${Number(item.priceUsd).toFixed(4)}
+                                <span className={`price-change ${Number(item.priceChange_h24) >= 0 ? '' : 'negative'}`}>
+                                    {' '}{item.priceChange_h24}%
+                                </span>
+                            </div>
                             <div className="volume">
                                 24h Volume ${item.total_volume_24h.toLocaleString()}
                             </div>
