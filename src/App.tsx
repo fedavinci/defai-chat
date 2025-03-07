@@ -34,15 +34,15 @@ const useStyle = createStyles(({ css }) => ({
 
 const App = () => {
   const { styles } = useStyle();
-  const { isConnecting, isConnected } = useAccount(); // 监听钱包状态
-  const [forceConnect, setForceConnect] = useState(false);
+  // const { isConnecting, isConnected } = useAccount(); // 监听钱包状态
+  // const [forceConnect, setForceConnect] = useState(false);
 
-  useEffect(() => {
-    if (forceConnect && !isConnecting && !isConnected) {
-      document.getElementById('force-connect')?.click();
-      setForceConnect(false);
-    }
-  }, [forceConnect, isConnecting, isConnected])
+  // useEffect(() => {
+  //   if (forceConnect && !isConnecting && !isConnected) {
+  //     document.getElementById('force-connect')?.click();
+  //     setForceConnect(false);
+  //   }
+  // }, [forceConnect, isConnecting, isConnected])
 
   // isConnecting isConnected  forceConnect
   //      F           F            F         mount
@@ -50,19 +50,19 @@ const App = () => {
   //      F           T            F         update
   //      F           F            T         update
 
-  useEffect(() => {
-    if (!isConnecting && !isConnected) {
-      setForceConnect(true)
-    }
-  }, [isConnecting, isConnected]);
+  // useEffect(() => {
+  //   if (!isConnecting && !isConnected) {
+  //     setForceConnect(true)
+  //   }
+  // }, [isConnecting, isConnected]);
 
-  if (isConnecting) {
-    return <div className={styles.loading}><Spin size="large" /></div>;
-  }
+  // if (isConnecting) {
+  //   return <div className={styles.loading}><Spin size="large" /></div>;
+  // }
 
   return (
     <div className={styles.app}>
-      <div className={styles.wallet}>
+      {/* <div className={styles.wallet}>
         <ConnectButton.Custom>
           {({ openConnectModal }) => (
             <>
@@ -71,10 +71,13 @@ const App = () => {
             </>
           )}
         </ConnectButton.Custom>
-      </div>
-      {isConnected ? <TokenRank /> : null}
+      </div> */}
+      {/* {isConnected ? <TokenRank /> : null}
       {isConnected ? <Chat /> : <p>Please connect your wallet to continue</p>}
-      {isConnected ? <NFTRank /> : null}
+      {isConnected ? <NFTRank /> : null} */}
+      <TokenRank />
+      <Chat />
+      <NFTRank />
     </div>
   );
 };

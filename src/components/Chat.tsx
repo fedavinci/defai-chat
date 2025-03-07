@@ -179,7 +179,7 @@ const roles: GetProp<typeof Bubble.List, 'roles'> = {
 type SuggestionItems = Exclude<GetProp<typeof Suggestion, 'items'>, () => void>;
 
 const suggestions: SuggestionItems = [
-  { label: 'Check Balance', value: 'Check Balance' },
+  // { label: 'Check Balance', value: 'Check Balance' },
   { label: 'Check USDT Token Address', value: 'Check USDT Token Address' },
   // { label: 'Transfer S Tokens', value: 'Transfer S Tokens' },
   { label: 'Get Hot Tokens', value: 'Get Hot Tokens' },
@@ -193,7 +193,7 @@ const suggestions: SuggestionItems = [
 const Independent: React.FC = () => {
 
   const { styles } = useStyle();
-  const { address } = useAccount();
+  // const { address } = useAccount();
 
   const { sendTransaction } = useSendTransaction();
   const { writeContract } = useWriteContract()
@@ -202,10 +202,11 @@ const Independent: React.FC = () => {
     request: async ({ message }, { onSuccess, onError }) => {
       let result = null;
       try {
-        if (message && message.toUpperCase() === 'CHECK BALANCE' && address) {
-          result = await getWalletBalance(address)
-        }
-        else if (message && message.toUpperCase() === 'CHECK USDT TOKEN ADDRESS') {
+        // if (message && message.toUpperCase() === 'CHECK BALANCE' && address) {
+        //   result = await getWalletBalance(address)
+        // }
+        // else 
+        if (message && message.toUpperCase() === 'CHECK USDT TOKEN ADDRESS') {
           result = await getTokenAddress()
         }
         else if (message && message.toUpperCase() === 'GET HOT TOKENS') {
